@@ -17,11 +17,13 @@ import type { Device } from '~/types'
 
 import Button from '~/components/material/Button'
 import Drawer from '~/components/material/Drawer'
+import Icon from '~/components/material/Icon'
 import IconButton from '~/components/material/IconButton'
 import TopAppBar from '~/components/material/TopAppBar'
 
 import DeviceList from './components/DeviceList'
 import DeviceActivity from './activities/DeviceActivity'
+import PairActivity from './activities/PairActivity'
 import RouteActivity from './activities/RouteActivity'
 
 type DashboardState = {
@@ -51,8 +53,11 @@ const DashboardDrawer = (props: {
         {(devices: Device[]) => <DeviceList class="p-2" devices={devices} />}
       </Show>
       <div class="grow" />
+      <Button class="m-4" leading={<Icon>add</Icon>} href="/pair" onClick={props.onClose}>
+        Pair new device
+      </Button>
       <hr class="mx-4 opacity-20" />
-      <Button class="m-4" href="/logout">Sign out</Button>
+      <Button class="m-4" color="error" href="/logout">Sign out</Button>
     </>
   )
 }
@@ -93,6 +98,9 @@ const DashboardLayout: VoidComponent = () => {
         >
           <Match when={!!profile.error}>
             <Navigate href="/login" />
+          </Match>
+          <Match when={dongleId() === 'pair'}>
+            <PairActivity />
           </Match>
           <Match when={dateStr()} keyed>
             <RouteActivity dongleId={dongleId()} dateStr={dateStr()} />
